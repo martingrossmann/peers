@@ -58,6 +58,7 @@ public class UdpMessageReceiver extends MessageReceiver {
         int result = AccessController.doPrivileged(
             new PrivilegedAction<Integer>() {
                 public Integer run() {
+                    logger.info("Listening to UDP on " + datagramSocket.getLocalAddress().getHostName() + ":" + datagramSocket.getLocalPort());
                     try {
                         datagramSocket.receive(packet);
                     } catch (SocketTimeoutException e) {
@@ -70,6 +71,8 @@ public class UdpMessageReceiver extends MessageReceiver {
                     } catch (IOException e) {
                         logger.error("cannot receive packet", e);
                         return ioException;
+                    } finally {
+                        logger.info("Not listening to UDP on " + datagramSocket.getLocalAddress().getHostName() + ":" + datagramSocket.getLocalPort());
                     }
                     return noException;
                 }

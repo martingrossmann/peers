@@ -67,8 +67,10 @@ public abstract class MessageReceiver implements Runnable {
         while (isListening) {
             try {
                 listen();
-            } catch (IOException e) {
-                logger.error("input/output error", e);
+            } catch (Throwable e) {
+                if (e instanceof Exception) logger.error("input/output error", (Exception)e);
+                else logger.error("input/output error. Throwable that was not exception: " + e.getClass().getName() + ", " + e.getMessage());
+                if (!(e instanceof IOException)) throw (RuntimeException)e;
             }
         }
     }
