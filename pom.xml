@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>to.lova.peers</groupId>
     <artifactId>peers</artifactId>
-    <version>0.6-SNAPSHOT</version>
+    <version>0.6.0</version>
     <packaging>pom</packaging>
 
     <name>peers</name>
     <description>Java SIP softphone</description>
     <url>http://peers.sourceforge.net/</url>
-
     <licenses>
         <license>
             <name>GNU General Public License (GPL)</name>
@@ -25,7 +23,6 @@
             <url>https://github.com/ymartineau</url>
         </developer>
     </developers>
-
     <contributors>
         <contributor>
              <name>Giovanni Lovato</name>
@@ -44,7 +41,7 @@
         <url>scm:git:git@github.com:heruan/peers.git</url>
         <connection>scm:git:git@github.com:heruan/peers.git</connection>
         <developerConnection>scm:git:git@github.com:heruan/peers.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>0.6.0</tag>
     </scm>
     <distributionManagement>
         <snapshotRepository>
@@ -177,7 +174,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <execute></execute>
+                                        <execute />
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>
@@ -187,5 +184,4 @@
             </plugins>
         </pluginManagement>
     </build>
-
 </project>
