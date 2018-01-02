@@ -15,8 +15,6 @@
     <module>peers-demo</module>
     <module>peers-doc</module>
     <module>peers-gui</module>
-    <!-- module>peers-js</module -->
-    <!-- module>peers-jws</module -->
     <module>peers-lib</module>
   </modules>
 
@@ -30,6 +28,12 @@
       <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
     </repository>
   </distributionManagement>
+
+  <scm>
+      <url>scm:git:git@github.com:heruan/peers.git</url>
+      <connection>scm:git:git@github.com:heruan/peers.git</connection>
+      <developerConnection>scm:git:git@github.com:heruan/peers.git</developerConnection>
+  </scm>
 
   <build>
     <pluginManagement>
