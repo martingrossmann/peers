@@ -5,8 +5,9 @@
   <parent>
     <groupId>to.lova.peers</groupId>
     <artifactId>peers</artifactId>
-    <version>0.5.5-SNAPSHOT</version>
+    <version>0.6-SNAPSHOT</version>
   </parent>
+
   <artifactId>peers-demo</artifactId>
 
   <name>peers-demo</name>
@@ -27,4 +28,5 @@
       <version>${project.version}</version>
     </dependency>
   </dependencies>
+
 </project>
