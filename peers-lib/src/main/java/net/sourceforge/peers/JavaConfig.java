@@ -13,8 +13,8 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
-    Copyright 2012 Yohann Martineau 
+
+    Copyright 2012 Yohann Martineau
 */
 
 package net.sourceforge.peers;
@@ -46,6 +46,7 @@ public class JavaConfig implements Config {
     private int rtpPort;
     private String authorizationUsername;
     private List<Codec> supportedCodecs;
+    private String userAgentString;
 
     public JavaConfig()
     {
@@ -71,7 +72,8 @@ public class JavaConfig implements Config {
 
     public JavaConfig(InetAddress localInetAddress, String userPart, String password, String domain,
                       SipURI outboundProxy, int sipPort, MediaMode mediaMode, boolean mediaDebug,
-                      SoundSource.DataFormat mediaFileDataFormat, String mediaFile, int rtpPort, String authorizationUsername, List<Codec> supportedCodecs) {
+                      SoundSource.DataFormat mediaFileDataFormat, String mediaFile, int rtpPort, String authorizationUsername,
+                      List<Codec> supportedCodecs, String userAgentString) {
         this.localInetAddress = localInetAddress;
         this.userPart = userPart;
         this.password = password;
@@ -85,6 +87,7 @@ public class JavaConfig implements Config {
         this.rtpPort = rtpPort;
         this.authorizationUsername = authorizationUsername;
         this.supportedCodecs = supportedCodecs;
+        this.userAgentString = userAgentString;
     }
 
     @Override
@@ -152,6 +155,11 @@ public class JavaConfig implements Config {
     }
 
     @Override
+    public String getUserAgentString() {
+        return userAgentString;
+    }
+
+    @Override
     public SoundSource.DataFormat getMediaFileDataFormat() { return mediaFileDataFormat; }
 
     @Override
@@ -216,6 +224,11 @@ public class JavaConfig implements Config {
     @Override
     public void setSupportedCodecs(List<Codec> supportedCodecs) {
        this.supportedCodecs = supportedCodecs;
+    }
+
+    @Override
+    public void setUserAgentString(String userAgentString) {
+        this.userAgentString = userAgentString;
     }
 
     @Override

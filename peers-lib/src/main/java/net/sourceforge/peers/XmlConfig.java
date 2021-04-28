@@ -13,26 +13,11 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
-    Copyright 2010-2013 Yohann Martineau 
+
+    Copyright 2010-2013 Yohann Martineau
 */
 
 package net.sourceforge.peers;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.*;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import net.sourceforge.peers.media.MediaMode;
 import net.sourceforge.peers.media.SoundSource;
@@ -40,10 +25,29 @@ import net.sourceforge.peers.sdp.Codec;
 import net.sourceforge.peers.sip.RFC3261;
 import net.sourceforge.peers.sip.syntaxencoding.SipURI;
 import net.sourceforge.peers.sip.syntaxencoding.SipUriSyntaxException;
-
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class XmlConfig implements Config {
 
@@ -72,9 +76,10 @@ public class XmlConfig implements Config {
     private int rtpPort;
     private String authorizationUsername;
     private List<Codec> supportedCodecs;
-    
+    private String userAgentString;
+
     // corresponding DOM nodes
-    
+
     private Node ipAddressNode;
     private Node userPartNode;
     private Node domainNode;
@@ -88,6 +93,7 @@ public class XmlConfig implements Config {
     private Node rtpPortNode;
     private Node authUserNode;
     private Node supportedCodecsNode;
+    private Node userAgentStringNode;
 
     // non-persistent variables
 
@@ -102,7 +108,7 @@ public class XmlConfig implements Config {
             return;
         }
         DocumentBuilderFactory documentBuilderFactory =
-            DocumentBuilderFactory.newInstance();
+                DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder;
         try {
             documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -113,7 +119,7 @@ public class XmlConfig implements Config {
         try {
             document = documentBuilder.parse(file);
         } catch (SAXException e) {
-            logger.error("cannot parse " + fileName,e );
+            logger.error("cannot parse " + fileName, e);
             return;
         } catch (IOException e) {
             logger.error("IOException", e);
@@ -138,7 +144,7 @@ public class XmlConfig implements Config {
             userPart = userPartNode.getTextContent();
         }
         authUserNode = getFirstChild(documentElement, "authorizationUsername");
-        if (! isNullOrEmpty(authUserNode)) {
+        if (!isNullOrEmpty(authUserNode)) {
             authorizationUsername = authUserNode.getTextContent();
         }
         domainNode = getFirstChild(documentElement, "domain");
@@ -204,8 +210,7 @@ public class XmlConfig implements Config {
 
         supportedCodecs = new ArrayList<Codec>();
         supportedCodecsNode = getFirstChild(documentElement, "supportedCodecs");
-        if(supportedCodecsNode != null && supportedCodecsNode.hasChildNodes())
-        {
+        if (supportedCodecsNode != null && supportedCodecsNode.hasChildNodes()) {
             NodeList nodeList = supportedCodecsNode.getChildNodes();
             for (int i = 0; i < nodeList.getLength(); ++i) {
                 Node node = nodeList.item(i);
@@ -218,6 +223,12 @@ public class XmlConfig implements Config {
                     supportedCodecs.add(codec);
                 }
             }
+        }
+        userAgentStringNode = getFirstChild(documentElement, "userAgentString");
+        if (isNullOrEmpty(userAgentStringNode)) {
+            logger.error("user agent string not found in configuration file");
+        } else {
+            userAgentString = userAgentStringNode.getTextContent();
         }
     }
 
@@ -329,7 +340,14 @@ public class XmlConfig implements Config {
     }
 
     @Override
-    public SoundSource.DataFormat getMediaFileDataFormat() { return mediaFileDataFormat; }
+    public String getUserAgentString() {
+        return userAgentString;
+    }
+
+    @Override
+    public SoundSource.DataFormat getMediaFileDataFormat() {
+        return mediaFileDataFormat;
+    }
 
     @Override
     public String getMediaFile() {
@@ -407,24 +425,29 @@ public class XmlConfig implements Config {
 
     @Override
     public void setSupportedCodecs(List<Codec> supportedCodecs) {
-       this.supportedCodecs = supportedCodecs;
+        this.supportedCodecs = supportedCodecs;
 
-       // Remove all child nodes first
-       if(supportedCodecsNode.hasChildNodes()) {
-           NodeList nodeList = supportedCodecsNode.getChildNodes();
-           for (int i = nodeList.getLength() - 1; i > 0; i--) {
-               Node node = nodeList.item(i);
-               supportedCodecsNode.removeChild(node);
-           }
-       }
+        // Remove all child nodes first
+        if (supportedCodecsNode.hasChildNodes()) {
+            NodeList nodeList = supportedCodecsNode.getChildNodes();
+            for (int i = nodeList.getLength() - 1; i > 0; i--) {
+                Node node = nodeList.item(i);
+                supportedCodecsNode.removeChild(node);
+            }
+        }
 
-       for(Codec codec : supportedCodecs)
-       {
-           Element node = document.createElement(XML_CODEC_NODE);
-           node.setAttribute(XML_CODEC_ATTR_NAME, codec.getName());
-           node.setAttribute(XML_CODEC_ATTR_PAYLOADTYPE, Integer.toString(codec.getPayloadType()));
-           supportedCodecsNode.appendChild(node);
-       }
+        for (Codec codec : supportedCodecs) {
+            Element node = document.createElement(XML_CODEC_NODE);
+            node.setAttribute(XML_CODEC_ATTR_NAME, codec.getName());
+            node.setAttribute(XML_CODEC_ATTR_PAYLOADTYPE, Integer.toString(codec.getPayloadType()));
+            supportedCodecsNode.appendChild(node);
+        }
+    }
+
+    @Override
+    public void setUserAgentString(String userAgentString) {
+        this.userAgentString = userAgentString;
+
     }
 
     @Override

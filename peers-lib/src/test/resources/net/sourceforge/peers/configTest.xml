@@ -14,7 +14,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
+
     Copyright 2007, 2008, 2009, 2010, 2012 Yohann Martineau
 -->
 <peers xmlns="http://peers.sourceforge.net"
@@ -67,5 +67,7 @@
     <codec name="PCMU" payloadType="0"/>
     <codec name="telephone-event" payloadType="101"/>
   </supportedCodecs>
+  <!-- userAgenteString marks some SIP requests like INVITE with a specific string -->
+  <userAgentString>peers-lib</userAgentString>
 
 </peers>

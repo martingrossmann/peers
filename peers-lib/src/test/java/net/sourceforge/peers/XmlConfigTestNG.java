@@ -13,8 +13,8 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
-    Copyright 2010 Yohann Martineau 
+
+    Copyright 2010 Yohann Martineau
 */
 
 package net.sourceforge.peers;
@@ -49,6 +49,7 @@ public class XmlConfigTestNG {
         int rtpPort = 8002;
         String authorizationUsername = "authUser";
         List<Codec> supportedCodecs = new ArrayList<Codec>();
+        String userAgentString = "peers-lib";
         Codec codec = new Codec();
         codec.setName("testCodec1");
         codec.setPayloadType(128);
@@ -82,6 +83,7 @@ public class XmlConfigTestNG {
         assert rtpPort == config.getRtpPort();
         assert authorizationUsername.equals(config.getAuthorizationUsername());
         assert supportedCodecs.equals(config.getSupportedCodecs());
+        assert userAgentString.equals(config.getUserAgentString());
     }
 
 }
